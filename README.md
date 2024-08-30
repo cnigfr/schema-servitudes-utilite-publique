@@ -13,6 +13,7 @@ Ce standard national de données SUP est cohérent et vient compléter, dans le 
 
 
 ## Versions
+- v2016b rev. 2024-08 : 1.1.2
 - v2016b rev. 2023-08 : 1.1.1
 - v2016 : 1.1.0
 - v2013 : 1.0.0
