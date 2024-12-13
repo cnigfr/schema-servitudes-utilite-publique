@@ -1,0 +1,113 @@
+-- implantation table gestionnaire_sup (table des gestionnaires des sup)
+
+CREATE TABLE gestionnaire_sup (
+	idgest char(9) NOT NULL,
+	nomgest char(80) NOT NULL,
+	nomcorres char(80),
+	numtel char(10),
+	courriel char(80),
+	adresse char(254),
+	CONSTRAINT pk_gest_sup PRIMARY KEY (idgest)
+	);
+
+-- implantation table _act_sup (table des actes des sup)
+
+CREATE TABLE acte_sup (
+	idacte char(40) NOT NULL,
+	nomacte char(100) NOT NULL,
+	reference char(50) DEFAULT 'Inconnu',
+	typeacte char(50) DEFAULT 'Non renseigné',
+	fichier char(254) NOT NULL,
+	decision char(25) DEFAULT 'Création',
+	datedecis char(8) NOT NULL,
+	datepub char(8),
+	aplan char(1),
+	CONSTRAINT pk_acte_sup PRIMARY KEY (idacte),
+	CONSTRAINT verif_typeacte CHECK (typeacte IN ('Texte de loi' , 'Décret en Conseil d''Etat',
+	'Décret Premier Ministre', 'Décret', 'Arrêté ministériel', 'Arrêté Préfet de région',
+	'Arrêté préfectoral', 'Arrêté de SUP', 'Arrêté municipal', 'Autre', 'Non Renseigné')),
+	CONSTRAINT verif_decision_a4 CHECK (decision IN ('Création', 'Modification', 'Substitution')),
+	CONSTRAINT verif_aplan_a4 CHECK (aplan IN ('T', 'F'))
+	);
+
+-- implantation table servitude (table des servitudes)
+
+CREATE TABLE servitude (
+	idsup char(40) NOT NULL,
+	idgest char(9) NOT NULL,
+	nomsup char(100) NOT NULL,
+	nomsuplitt char(100),
+	categorie char(10),
+	idintgest char(25),
+	descriptio char(254),
+	datemaj char(8) NOT NULL,
+	echnum integer NOT NULL,
+	validegest char(1) DEFAULT 'F',
+	obsvalidat char(254),
+	modeprod char(25) NOT NULL,
+	quiprod char(80),
+	docsource char(80), 
+	CONSTRAINT pk_servitude PRIMARY KEY (idsup),
+	CONSTRAINT fk_idgest FOREIGN KEY (idgest) 
+	REFERENCES gestionnaire_sup (idgest)
+	MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT verif_validegest CHECK (validegest IN ('T', 'F')),
+	CONSTRAINT verif_modeprod CHECK (modeprod IN ('import', 'numérisation', 'reconstitution'))
+	) ;
+
+-- implantation table servitude_acte_sup (table exprimant la relation entre les servitudes et les actes les instituants)
+
+CREATE TABLE servitude_acte_sup (
+	idsup char(40) NOT NULL,
+	idacte char(40) NOT NULL,
+	CONSTRAINT fk_idsup FOREIGN KEY (idsup)
+	REFERENCES servitude (idsup)
+	MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT fk_idacte FOREIGN KEY (idacte)
+	REFERENCES acte_sup (idacte)
+	MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT pk_act_sup PRIMARY KEY (idsup,idacte)
+	) ;
+
+-- implantation table generateur_sup_s (table contenant les générateurs surfaciques des sup )
+
+CREATE TABLE generateur_sup_s (
+	geom geometry(multipolygon,2154),
+	idgen char(40) NOT NULL,
+	idsup char(40) NOT NULL,
+	nomgen char(100) NOT NULL,
+	typegen char(100),
+	modegenere char(50),
+	srcgeogen char(30),
+	datesrcgen char(8),
+	refbdext char(50),
+	idbdext char(50),
+	lib_gbdatddmod date,
+	CONSTRAINT pk_idgen PRIMARY KEY (idgen),
+	CONSTRAINT fk_idsup FOREIGN KEY (idsup)
+	REFERENCES servitude (idsup)
+	MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT verif_mode_gen_a4 CHECK (modegenere IN ('Digitalisation',
+	'Duplication', 'Liste de coordonnées', 'Géométrie fictive'))
+	);
+
+-- implantation table assiette_sup_s (table contenant les assiettes liées aux sup)
+
+CREATE TABLE assiette_sup_s (
+	geom geometry(multipolygon,2154),
+	idass char(40) NOT NULL,
+	idgen char(40) NOT NULL,
+	nomass char(100) NOT NULL,
+	typeass char(40),
+	modegeoass char(25) NOT NULL,
+	paramcalc integer,
+	srcgeoass char(30),
+	datesrcass char(8),
+	lib_gbdatddmod date,
+	CONSTRAINT pk_idass PRIMARY KEY (idass),
+	CONSTRAINT fk_idgen FOREIGN KEY (idgen)
+	REFERENCES generateur_sup_s (idgen)
+	MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT verif_modegeo CHECK (modegeoass IN ('Égale au générateur', 'Zone tampon',
+	'Digitalisation', 'Duplication', 'Liste de coordonnées', 'Secteur angulaire', 'Calculée', 'Liste de parcelles', 'Géométrie fictive'))
+	);
