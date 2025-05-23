@@ -1,2 +1,4 @@
 
-Scripts de création des tables conformes au standard CNIG SUP v2016b et au fromat GPKG
+Scripts SQL de création des tables conformes au standard CNIG SUP v2016b 
+- pour PostGreSQL
+- au format GPKG
