@@ -11,6 +11,12 @@ Il se place du point de vue du service qui gère, numérise (ou fait numériser)
 
 Ce standard national de données SUP est cohérent et vient compléter, dans le domaine des servitudes, le standard national du CNIG pour la dématérialisation des documents d’urbanisme.
 
+Ce dépôt Github contient différentes rubriques, dont : 
+
+- le [mandat](https://github.com/cnigfr/schema-servitudes-utilite-publique/tree/main/mandat) et les [compte-rendus de réunion](https://github.com/cnigfr/schema-servitudes-utilite-publique/tree/main/reunions) du "GT CNIG DDU / **sous-groupe 3**" dédié à la thématique SUP
+- le [standard CNIG SUP](https://github.com/cnigfr/schema-servitudes-utilite-publique/tree/main/standard)
+- des [ressources liées au modèle de données](https://github.com/cnigfr/schema-servitudes-utilite-publique/tree/main/schema), dont des scripts de création des tables conformes au standard CNIG SUP (gabarit).
+
 
 ## Versions
 - v2016b rev. 2024-08 : 1.1.2
